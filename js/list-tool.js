@@ -243,7 +243,7 @@ var ListTool = (function () {
 			$buttonsGet.each(function (index) {
 				var options = {};
 				options.delay = { show : 500 };
-				options.placement = index > 4 ? 'bottom' : 'top';
+				options.placement = index % 2 === 1 ? 'bottom' : 'top';
 				$(this).tooltip(options);
 			});
 

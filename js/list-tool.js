@@ -1,4 +1,4 @@
-/*globals jQuery, $, ace, document */
+/*globals jQuery, $, ace, document, clearTimeout, setTimeout */
 
 var ListTool = (function () {
 	'use strict';
@@ -7,6 +7,8 @@ var ListTool = (function () {
 		// variables
 		$buttonsGet,
 		$buttonsTweak,
+		editorChangeThrottleTime = 100,
+		editorChangeTimer,
 		editorListA,
 		editorListB,
 		editorResults,
@@ -16,6 +18,7 @@ var ListTool = (function () {
 		clear,
 		getArray,
 		getResults,
+		handleEditorChange,
 		handleListBoxActions,
 		setMainLogo,
 		setValueFromArray,
@@ -30,9 +33,12 @@ var ListTool = (function () {
 	};
 
 	getArray = function (editor) {
-		var numLines = editor.session.getLength();
-		return editor.session.getLines(0, numLines);
-		// return editor.getValue().split('\n');
+		var numLines = editor.session.getLength(),
+			result = editor.session.getLines(0, numLines);
+		if (result.length && result[result.length - 1] === '') {
+			result.pop();
+		}
+		return result;
 	};
 
 	getResults = function () {
@@ -49,6 +55,11 @@ var ListTool = (function () {
 			results = [];
 		}
 		tweakResults();
+	};
+
+	handleEditorChange = function (e) {
+		clearTimeout(editorChangeTimer);
+		editorChangeTimer = setTimeout(getResults, editorChangeThrottleTime);
 	};
 
 	handleListBoxActions = function (e) {
@@ -123,11 +134,7 @@ var ListTool = (function () {
 	};
 
 	showItemCount = function (editor, selector) {
-		var numLines = editor.session.getLength();
-		if (numLines === 1 && editor.getValue() === '') {
-			numLines = 0;
-		}
-		$(selector).text(numLines);
+		$(selector).text(getArray(editor).length);
 	};
 
 	tweakResults = function () {
@@ -149,11 +156,14 @@ var ListTool = (function () {
 		showAllItemCounts();
 	};
 
-	initEditor = function (id) {
+	initEditor = function (id, listenForChanges) {
 		var editor = ace.edit(id);
 		editor.setTheme('ace/theme/eclipse');
 		editor.getSession().setMode('ace/mode/text');
 		editor.setShowPrintMargin(false);
+		if (listenForChanges) {
+			editor.on('change', handleEditorChange);
+		}
 		return editor;
 	};
 
@@ -213,9 +223,9 @@ var ListTool = (function () {
 			$buttonsTweak = $('#tweak-results button');
 
 			// init editors
-			editorListA = initEditor('list-a');
-			editorListB = initEditor('list-b');
-			editorResults = initEditor('results');
+			editorListA = initEditor('list-a', true);
+			editorListB = initEditor('list-b', true);
+			editorResults = initEditor('results', false);
 			editorResults.setReadOnly(true);
 
 			// setup start values

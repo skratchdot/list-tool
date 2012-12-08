@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>List Tool by skratchdot</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="lists, sets, union, intersection, complement, bootstrap" />
+	<meta name="author" content="skratchdot.com" />
+	<!-- styles -->
+	<link href="http://skratchdot.github.com/list-tool/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="http://skratchdot.github.com/list-tool/css/list-tool.css" rel="stylesheet" />
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<div id="wrapper">
+		<div class="container">
+			<!-- header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="span4">
+						<h1>List Tool <small>by skratchdot</small></h1>			
+					</div>
+					<div class="offset1 span3 hidden-phone">
+						<div id="main-logo">&nbsp;</div>
+					</div>
+					<div id="header-actions">
+						<a href="#information-modal" class="btn btn-info" data-toggle="modal"><i class="icon-white icon-info-sign"></i> Information</a>
+						<a href="https://github.com/skratchdot/list-tool/" class="btn btn-inverse"><i class="icon-white icon-download-alt"></i> View Source</a>
+					</div>
+				</div>
+			</div>
+			<!-- information modal -->
+			<div id="information-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3>About List Tool <small>by skratchdot</small></h3>
+				</div>
+				<div class="modal-body">
+					<p>
+						This simple tool to compare lists (or sets) of items was
+						created out of frustration. Week by week, I discovered myself
+						doing the same types of operations: someone would come to me
+						with a list of products (in .xls or .txt format), and I would have
+						to compare it to another list (from a different source, let's say 
+						a database or .xml file). I'd then find myself using tools like excel, sql,
+						bash/awk/sed/diff, javascript, etc to compare the lists from different
+						sources.
+					</p>
+					<p>
+						Now I can paste this lists here.
+					</p>
+					<p>						
+						I hope you can find a use for it as well!
+					</p>
+					<h4>Quick Start:</h4>
+					<ol>
+						<li>Paste content into "List A"</li>
+						<li>Paste content into "List B"</li>
+						<li>Click one of the "Populate Results" buttons</li>
+						
+					</ol>
+					<h4>Links:</h4>
+					<ul>
+						<li><a href="http://skratchdot.com/projects/list-tool/">Project Page</a></li>
+						<li><a href="https://github.com/skratchdot/list-tool/">Source Code</a></li>
+						<li><a href="https://github.com/skratchdot/list-tool/issues/">Issues / Feature Requests</a></li>
+					</ul>
+					
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+				</div>
+			</div>
+
+			<!-- buttons -->
+			<div class="row">
+				<!-- buttons: get results -->
+				<div id="get-results" class="span8">
+					<h4>Populate Results (Choose One):</h4>
+					<div class="row">
+						<div class="method-group" data-method="self">
+							<button class="btn a-first" type="button" data-logo="1" title="Show only A"><i class="icon-ok"></i> A</button>
+							<button class="btn b-first" type="button" data-logo="2" title="Show only B"><i class="icon-ok"></i> B</button>
+						</div>
+						<div class="method-group" data-method="union">
+							<button class="btn a-first" type="button" data-logo="3" title="Union, Logical OR"><i class="icon-ok"></i> A &#8746; B</button>
+							<button class="btn b-first" type="button" data-logo="3" title="Union, Logical OR"><i class="icon-ok"></i> B &#8746; A</button>
+						</div>
+						<div class="method-group" data-method="intersection">
+							<button class="btn a-first" type="button" data-logo="4" title="Intersection, Logical AND"><i class="icon-ok"></i> A &#8745; B</button>
+							<button class="btn b-first" type="button" data-logo="4" title="Intersection, Logical AND"><i class="icon-ok"></i> B &#8745; A</button>
+						</div>
+						<div class="method-group" data-method="complement">
+							<button class="btn a-first" type="button" data-logo="5" title="Set difference, Complement, Minus"><i class="icon-ok"></i> A &#8722; B</button>
+							<button class="btn b-first" type="button" data-logo="6" title="Set difference, Complement, Minus"><i class="icon-ok"></i> B &#8722; A</button>
+						</div>
+						<div class="method-group" data-method="outersection">
+							<button class="btn a-first" type="button" data-logo="7" title="Symmetric difference, Logical XOR"><i class="icon-ok"></i> A &#916; B</button>
+							<button class="btn b-first" type="button" data-logo="7" title="Symmetric difference, Logical XOR"><i class="icon-ok"></i> B &#916; A</button>
+						</div>
+					</div>
+				</div>
+				<!-- buttons: tweak results -->
+				<div id="tweak-results" class="span4">
+					<h4>Tweak Results (Choose Any):</h4>
+					<div class="row">
+						<button id="btn-sort" class="btn span2" type="button"><i class="icon-ok"></i> Sort</button>
+						<button id="btn-reverse" class="btn span2" type="button"><i class="icon-ok"></i> Reverse</button>
+					</div>
+					<div class="row">
+						<button id="btn-unique" class="btn span4" type="button"><i class="icon-ok"></i> Unique</button>
+					</div>
+				</div>
+			</div>
+			<!-- list boxes -->
+			<div id="list-boxes" class="row">
+				<div class="span4">
+					<h4>
+						List A:
+						<small class="pull-right">
+							<span class="item-count-list-a">0</span>
+							item(s)
+						</small>
+					</h4>
+					<div class="list-box-container">
+						<div class="list-box" id="list-a"></div>
+					</div>
+					<div class="pull-right list-box-actions">
+						<span class="badge badge-info">trim</span>
+						<span class="badge badge-info">sort</span>
+						<span class="badge badge-info">reverse</span>
+						<span class="badge badge-info">unique</span>
+						<span class="badge badge-info">select all</span>
+					</div>
+				</div>
+				<div class="span4">
+					<h4>
+						List B:
+						<small class="pull-right">
+							<span class="item-count-list-b">0</span>
+							item(s)
+						</small>
+					</h4>
+					<div class="list-box-container">
+						<div class="list-box" id="list-b"></div>
+					</div>
+					<div class="pull-right list-box-actions">
+						<span class="badge badge-info">trim</span>
+						<span class="badge badge-info">sort</span>
+						<span class="badge badge-info">reverse</span>
+						<span class="badge badge-info">unique</span>
+						<span class="badge badge-info">select all</span>
+					</div>
+				</div>
+				<div id="results-container" class="span4">
+					<h4>
+						Results:
+						<small class="pull-right">
+							<span class="item-count-results">0</span>
+							item(s)
+						</small>
+					</h4>
+					<div class="list-box-container">
+						<div class="list-box" id="results"></div>
+					</div>
+					<div class="pull-right list-box-actions">
+						<span class="badge badge-info">select all</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer-spacer">&nbsp;</div>
+	</div>
+	<!-- footer -->
+	<div id="footer">
+		<hr />
+		<div class="container">
+			<!-- built with -->
+			<div class="footer-built-with">
+				built with:
+				<a href="https://github.com/ajaxorg/ace/">ace</a>,
+				<a href="http://twitter.github.com/bootstrap/">bootstrap</a>,
+				<a href="http://jquery.com/">jquery</a>
+			</div>
+			<!-- copyright -->
+			<div class="footer-copy">
+				&copy; 2012 <a class="footer-icon" href="http://skratchdot.com/">
+					skratchdot
+					<img width="16" height="16" alt="skratchdot" src="http://skratchdot.com/favicon.ico" />
+				</a>
+			</div>
+		</div>
+	</div>
+	<!-- include scripts -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script src="http://skratchdot.github.com/list-tool/js/polyfills.js" type="text/javascript" charset="utf-8"></script>
+	<script src="http://skratchdot.github.com/list-tool/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="http://skratchdot.github.com/list-tool/js/list-tool.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

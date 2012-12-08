@@ -17,12 +17,12 @@ html, body {
 	font-size: 20px;
 }
 
-#main-logo {
+#logo-main {
 	width: 120px;
 	height: 81px;
 	position: absolute;
 	top: 4px;
-	background: url(../img/sprite.png) no-repeat 0 0;
+	background: url('../img/sprite.png') no-repeat 0 0;
 }
 
 #header-actions {
@@ -54,6 +54,27 @@ html, body {
 	display: inline-block;
 	margin: 0;
 	vertical-align: baseline;
+}
+
+#list-boxes h4.title {
+	text-indent: 55px;
+	position: relative;
+}
+
+#list-boxes .logo {
+	position: absolute;
+	top: -6px;
+	width: 55px;
+	height: 32px;
+	background: url('../img/sprite-sm.png') no-repeat 0 0;
+}
+
+#list-boxes #logo-a {
+	background-position: 0 -32px;
+}
+
+#list-boxes #logo-b {
+	background-position: 0 -64px;
 }
 
 #list-boxes small {

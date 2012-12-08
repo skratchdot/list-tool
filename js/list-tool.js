@@ -12,15 +12,19 @@ var ListTool = (function () {
 		editorListA,
 		editorListB,
 		editorResults,
+		heightLogoMain = 81,
+		heightLogoResults = 32,
 		results = [],
 		resultsToShow = [],
+		selectorLogoMain = '#logo-main',
+		selectorLogoResults = '#logo-results',
 		// functions
 		clear,
 		getArray,
 		getResults,
 		handleEditorChange,
 		handleListBoxActions,
-		setMainLogo,
+		setLogo,
 		setValueFromArray,
 		showAllItemCounts,
 		showItemCount,
@@ -106,9 +110,8 @@ var ListTool = (function () {
 		editor.focus();
 	};
 
-	setMainLogo = function (index) {
-		var logoHeight = 81,
-			logoIndex = 0,
+	setLogo = function (selector, logoHeight, index) {
+		var logoIndex = 0,
 			activeIndex = parseInt($buttonsGet.filter('.active').data('logo'), 10),
 			backgroundPosition = '0 0';
 		if (typeof index === 'number') {
@@ -119,7 +122,7 @@ var ListTool = (function () {
 		if (logoIndex > 0) {
 			backgroundPosition = '0 -' + (logoIndex * logoHeight) + 'px';
 		}
-		$('#main-logo').css('background-position', backgroundPosition);
+		$(selector).css('background-position', backgroundPosition);
 	};
 
 	setValueFromArray = function (editor, arr) {
@@ -239,7 +242,8 @@ var ListTool = (function () {
 				if (!isActive) {
 					$current.addClass('active');
 				}
-				setMainLogo();
+				setLogo(selectorLogoMain, heightLogoMain);
+				setLogo(selectorLogoResults, heightLogoResults);
 				getResults();
 			});
 
@@ -259,9 +263,9 @@ var ListTool = (function () {
 
 			// change main-icon when hovering
 			$buttonsGet.hover(function (e) {
-				setMainLogo($(this).data('logo'));
+				setLogo(selectorLogoMain, heightLogoMain, $(this).data('logo'));
 			}, function (e) {
-				setMainLogo();
+				setLogo(selectorLogoMain, heightLogoMain);
 			});
 
 			// handle things like: sort, select all, etc

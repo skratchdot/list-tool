@@ -1,0 +1,118 @@
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 979px) {
+	#main-logo {
+		top: 25px;
+	}
+	#header-actions {
+		float: none;
+		clear: both;
+		margin-left: 20px;
+		padding-top: 10px;
+	}
+	#btn-sort,
+	#btn-reverse {
+		width: 300px;
+	}
+	.list-box-container {
+		height: 200px;
+		width: 300px;
+	}
+	.container,
+	#btn-unique,
+	#tweak-results,
+	#results-container,
+	#results-container .list-box-container  {
+		width: 620px;
+	}
+}
+
+@media (max-width: 679px) {
+	.page-header,
+	#get-results,
+	#tweak-results {
+		text-align: center;
+	}
+	#header-actions {
+		float: none;
+		clear: both;
+		margin-left: 20px;
+		padding-top: 10px;
+	}
+	#header-actions .btn {
+		width: 120px;
+	}
+	#get-results .a-first,
+	#btn-sort, #btn-reverse {
+		margin-bottom: 0;
+	}
+	#get-results .a-first {
+		float: left;
+	}
+	#get-results .b-first {
+		float: right;
+	}
+	.container,
+	.span1, .span2, .span3, .span4,
+	.span5, .span6, .span7, .span8,
+	.span9, .span10, .span11, .span12,
+	#get-results .method-group,
+	#btn-unique,
+	#btn-sort,
+	#btn-reverse,
+	#tweak-results,
+	#results-container,
+	#results-container .list-box-container {
+		width: 500px;
+	}
+	.list-box-container {
+		height: 200px;
+		width: 500px;
+	}
+	#get-results .btn {
+		width: 250px !important;
+		margin: 0;
+	}
+	.hidden-phone {
+		display: none !important;
+	}
+	#footer .footer-built-with,
+	#footer .footer-copy {
+		float: none;
+	}
+	#wrapper {
+		margin: 0 auto -75px;
+	}
+	#footer-spacer, #footer {
+		height: 75px;
+	}
+	#footer {
+		margin: 0;
+		padding: 0;
+		text-align: center;
+	}
+}
+
+@media (max-width: 540px) {
+	#get-results .a-first,
+	#btn-sort, #btn-reverse {
+		margin-bottom: 0;
+	}
+	.container,
+	.span1, .span2, .span3, .span4,
+	.span5, .span6, .span7, .span8,
+	.span9, .span10, .span11, .span12,
+	#get-results .method-group,
+	#btn-unique,
+	#btn-sort,
+	#btn-reverse,
+	#tweak-results,
+	#results-container,
+	#results-container .list-box-container,
+	.list-box-container {
+		width: 300px;
+	}
+	#get-results .btn {
+		width: 150px !important;
+	}
+
+}

@@ -51,6 +51,20 @@
 	#get-results .b-first {
 		float: right;
 	}
+	.modal {
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		left: 20px;
+		width: auto;
+		margin: 0;
+	}
+	.modal.fade {
+		top: -100px;
+	}
+	.modal.fade.in {
+		top: 20px;
+	}
 	.container,
 	.span1, .span2, .span3, .span4,
 	.span5, .span6, .span7, .span8,
@@ -96,6 +110,15 @@
 	#get-results .a-first,
 	#btn-sort, #btn-reverse {
 		margin-bottom: 0;
+	}
+	.modal {
+		top: 10px;
+		right: 10px;
+		left: 10px;
+	}
+	.modal-header .close {
+		padding: 10px;
+		margin: -10px;
 	}
 	.container,
 	.span1, .span2, .span3, .span4,

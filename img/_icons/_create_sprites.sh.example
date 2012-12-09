@@ -1,0 +1,13 @@
+#!/bin/bash
+
+rm sprite*.png
+convert *.png -append sprite-original.png
+convert sprite-original.png -resize x891 sprite.png
+convert sprite-original.png -resize x352 sprite-sm.png
+
+echo "
+  At this point, you still need to perform
+  \"color to alpha\" in gimp on sprite.png.
+  None of the imagemagick options I tried 
+  ended up looking very good.
+"

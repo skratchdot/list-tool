@@ -2,6 +2,10 @@ html, body {
 	height: 100%;
 }
 
+:focus {
+	outline: 0 !important;
+}
+
 #wrapper {
 	min-height: 100%;
 	height: auto !important;
@@ -9,12 +13,18 @@ html, body {
 	margin: 0 auto -45px;
 }
 
+#header {
+	background: #e6e6e6;
+	border-bottom:1px solid #999;
+}
+
 .page-header {
 	margin-bottom: 0;
 }
 
-.page-header h1 small {
+.page-header h1 small a {
 	font-size: 20px;
+	color: #c80000;
 }
 
 #logo-main {

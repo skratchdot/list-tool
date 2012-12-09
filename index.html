@@ -17,22 +17,30 @@
 </head>
 <body>
 	<div id="wrapper">
-		<div class="container">
-			<!-- header -->
-			<div class="page-header">
-				<div class="row">
-					<div class="span4">
-						<h1>List Tool <small>by skratchdot</small></h1>			
-					</div>
-					<div class="offset1 span3 hidden-phone">
-						<div id="logo-main">&nbsp;</div>
-					</div>
-					<div id="header-actions">
-						<a href="#information-modal" class="btn btn-info" data-toggle="modal"><i class="icon-white icon-info-sign"></i> Information</a>
-						<a href="https://github.com/skratchdot/list-tool/" class="btn btn-inverse"><i class="icon-white icon-download-alt"></i> View Source</a>
+		<!-- header -->
+		<div id="header">
+			<div class="container">
+				<div class="page-header">
+					<div class="row">
+						<div class="span4">
+							<h1>
+								List Tool
+								<small><a href="http://skratchdot.com/">by skratchdot</a></small>
+							</h1>			
+						</div>
+						<div class="offset1 span3 hidden-phone">
+							<div id="logo-main">&nbsp;</div>
+						</div>
+						<div id="header-actions">
+							<a href="#information-modal" class="btn btn-info" data-toggle="modal"><i class="icon-white icon-info-sign"></i> Information</a>
+							<a href="https://github.com/skratchdot/list-tool/" class="btn btn-inverse"><i class="icon-white icon-download-alt"></i> View Source</a>
+						</div>
 					</div>
 				</div>
-			</div>
+			</div>		
+		</div>
+		<!-- main container -->
+		<div class="container">
 			<!-- information modal -->
 			<div id="information-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-header">
@@ -75,7 +83,6 @@
 					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 				</div>
 			</div>
-
 			<!-- buttons -->
 			<div class="row">
 				<!-- buttons: get results -->

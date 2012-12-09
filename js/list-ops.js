@@ -1,10 +1,22 @@
-var ListOps = (function () {
+(function (global) {
 	'use strict';
 
 	var ListOps = {};
 
+	ListOps.empty = function () {
+		return [];
+	};
+
 	ListOps.self = function (arr) {
 		return arr;
+	};
+
+	ListOps.sort = function (arr) {
+		return arr.sort();
+	};
+
+	ListOps.reverse = function (arr) {
+		return arr.reverse();
 	};
 
 	ListOps.unique = function (arr) {
@@ -48,5 +60,6 @@ var ListOps = (function () {
 		return ListOps.union(setOne, setTwo);
 	};
 
-	return ListOps;
-}());
+	// Attach ListOps to global scope
+	global.ListOps = ListOps;
+}(this));

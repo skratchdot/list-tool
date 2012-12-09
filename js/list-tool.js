@@ -1,4 +1,4 @@
-/*globals ListOps, ace, jQuery, $ */
+/*globals ListOps, ace, jQuery, $, Worker */
 /*jslint browser: true */
 
 var ListTool = (function () {
@@ -18,12 +18,15 @@ var ListTool = (function () {
 		heightLogoResults = 32,
 		isInited = false,
 		results = [],
-		resultsToShow = [],
 		selectorLogoMain = '#logo-main',
 		selectorLogoResults = '#logo-results',
 		showModalKey = 'LIST_TOOL_MODAL_SHOWN',
+		worker = null,
+		workerKey,
 		// functions
+		calculating,
 		clear,
+		doWork,
 		getArray,
 		getResults,
 		handleEditorChange,
@@ -33,11 +36,60 @@ var ListTool = (function () {
 		showAllItemCounts,
 		showItemCount,
 		tweakResults,
+		tweakResultsHelper,
 		initEditor;
+
+	calculating = function (isCalculating) {
+		if (isCalculating) {
+			editorResults.setValue('');
+			$('.calculating-done').hide();
+			$('.calculating').show();
+		} else {
+			$('.calculating-done').show();
+			$('.calculating').hide();
+		}
+	};
 
 	clear = function (editor) {
 		editor.clearSelection();
 		editor.moveCursorTo(0, 0);
+	};
+
+	doWork = function (method, one, two, callback) {
+		var res = [];
+
+		// force callback to be a function
+		if (typeof callback !== 'function') {
+			callback = function () {};
+		}
+		if (method &&
+				ListOps.hasOwnProperty(method) &&
+				typeof ListOps[method] === 'function') {
+			if (typeof Worker !== 'undefined') {
+				if (worker !== null) {
+					worker.terminate();
+				}
+				workerKey = (new Date()).getTime();
+				worker = new Worker('http://skratchdot.github.com/list-tool/js/list-worker.js');
+				worker.addEventListener('message', function (event) {
+					if (event.data.key === workerKey) {
+						res = event.data.result || [];
+						callback(res);
+					}
+				}, false);
+				worker.postMessage({
+					key : workerKey,
+					method : method,
+					one : one,
+					two : two
+				});
+			} else {
+				res = ListOps[method](one, two);
+				callback(res);
+			}
+		} else {
+			callback(res);
+		}
 	};
 
 	getArray = function (editor) {
@@ -53,16 +105,18 @@ var ListTool = (function () {
 		var $active = $buttonsGet.filter('.active'),
 			method = $active.parents('.method-group').data('method'),
 			aFirst = $active.hasClass('a-first');
-		if (method && ListOps.hasOwnProperty(method) && typeof ListOps[method] === 'function') {
-			if (aFirst) {
-				results = ListOps[method](getArray(editorListA), getArray(editorListB));
-			} else {
-				results = ListOps[method](getArray(editorListB), getArray(editorListA));
-			}
+		calculating(true);
+		if (aFirst) {
+			doWork(method, getArray(editorListA), getArray(editorListB), function (data) {
+				results = data;
+				tweakResults();
+			});
 		} else {
-			results = [];
+			doWork(method, getArray(editorListB), getArray(editorListA), function (data) {
+				results = data;
+				tweakResults();
+			});
 		}
-		tweakResults();
 	};
 
 	handleEditorChange = function (e) {
@@ -76,7 +130,6 @@ var ListTool = (function () {
 			$listBox = $container.find('.list-box'),
 			id = $listBox.attr('id'),
 			action = $badge.text(),
-			refreshResults = true,
 			editor;
 
 		// get editor
@@ -91,23 +144,18 @@ var ListTool = (function () {
 		}
 
 		// perform action
-		if (action === 'trim') {
-			editor.setValue($.trim(editor.getValue()));
-		} else if (action === 'sort') {
-			editor.setValue(getArray(editor).sort().join('\n'));
-		} else if (action === 'reverse') {
-			editor.setValue(getArray(editor).reverse().join('\n'));
-		} else if (action === 'unique') {
-			editor.setValue(ListOps.unique(getArray(editor)).join('\n'));
-		} else if (action === 'select all') {
+		if (action === 'select all') {
 			editor.selectAll();
-			refreshResults = false;
-		}
-
-		// refresh results if we didn't "select all"
-		if (refreshResults) {
+		} else if (action === 'trim') {
+			editor.setValue($.trim(editor.getValue()));
 			clear(editor);
 			getResults();
+		} else {
+			doWork(action, getArray(editor), null, function (data) {
+				editor.setValue(data.join('\n'));
+				clear(editor);
+				getResults();
+			});
 		}
 
 		// make sure editor is now focused
@@ -138,6 +186,7 @@ var ListTool = (function () {
 		showItemCount(editorListA, '.item-count-list-a');
 		showItemCount(editorListB, '.item-count-list-b');
 		showItemCount(editorResults, '.item-count-results');
+		calculating(false);
 	};
 
 	showItemCount = function (editor, selector) {
@@ -145,22 +194,26 @@ var ListTool = (function () {
 	};
 
 	tweakResults = function () {
-		resultsToShow = results.slice();
+		calculating(true);
+		tweakResultsHelper(results.slice(), ['sort', 'unique', 'reverse']);
+	};
 
-		if ($('#btn-sort').is('.active')) {
-			resultsToShow.sort();
+	tweakResultsHelper = function (arr, fnArray) {
+		var current, result;
+		if (fnArray.length) {
+			current = fnArray.shift();
+			if ($('#btn-' + current).is('.active')) {
+				doWork(current, arr, null, function (res) {
+					result = res;
+					tweakResultsHelper(result, fnArray, null, null);
+				});
+			} else {
+				tweakResultsHelper(arr, fnArray, null, null);
+			}
+		} else {
+			setValueFromArray(editorResults, arr);
+			showAllItemCounts();
 		}
-
-		if ($('#btn-reverse').is('.active')) {
-			resultsToShow.reverse();
-		}
-
-		if ($('#btn-unique').is('.active')) {
-			resultsToShow = ListOps.unique(resultsToShow);
-		}
-
-		setValueFromArray(editorResults, resultsToShow);
-		showAllItemCounts();
 	};
 
 	initEditor = function (id, listenForChanges) {

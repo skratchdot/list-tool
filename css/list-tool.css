@@ -136,6 +136,10 @@ html, body {
 	background: #efefef;
 }
 
+.calculating {
+	display: none;
+}
+
 .modal-header {
 	background: #F5F5F5;
 }

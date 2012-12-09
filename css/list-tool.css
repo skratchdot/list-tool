@@ -136,6 +136,15 @@ html, body {
 	background: #efefef;
 }
 
+.modal-header {
+	background: #F5F5F5;
+}
+
+dl#example-datasets dt,
+dl#example-datasets dd {
+	margin-bottom: 10px;
+}
+
 #footer-spacer, #footer {
 	position:relative;
 	height: 45px;

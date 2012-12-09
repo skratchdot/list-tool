@@ -1,9 +1,10 @@
-/*globals jQuery, $, ace, document, clearTimeout, setTimeout */
+/*globals ListOps, ace, jQuery, $ */
+/*jslint browser: true */
 
 var ListTool = (function () {
 	'use strict';
 
-	var api = {},
+	var ListTool = {},
 		// variables
 		$buttonsGet,
 		$buttonsTweak,
@@ -12,12 +13,15 @@ var ListTool = (function () {
 		editorListA,
 		editorListB,
 		editorResults,
+		gettingExampleDataset = false,
 		heightLogoMain = 81,
 		heightLogoResults = 32,
+		isInited = false,
 		results = [],
 		resultsToShow = [],
 		selectorLogoMain = '#logo-main',
 		selectorLogoResults = '#logo-results',
+		showModalKey = 'LIST_TOOL_MODAL_SHOWN',
 		// functions
 		clear,
 		getArray,
@@ -49,11 +53,11 @@ var ListTool = (function () {
 		var $active = $buttonsGet.filter('.active'),
 			method = $active.parents('.method-group').data('method'),
 			aFirst = $active.hasClass('a-first');
-		if (method && api.hasOwnProperty(method) && typeof api[method] === 'function') {
+		if (method && ListOps.hasOwnProperty(method) && typeof ListOps[method] === 'function') {
 			if (aFirst) {
-				results = api[method](getArray(editorListA), getArray(editorListB));
+				results = ListOps[method](getArray(editorListA), getArray(editorListB));
 			} else {
-				results = api[method](getArray(editorListB), getArray(editorListA));
+				results = ListOps[method](getArray(editorListB), getArray(editorListA));
 			}
 		} else {
 			results = [];
@@ -94,7 +98,7 @@ var ListTool = (function () {
 		} else if (action === 'reverse') {
 			editor.setValue(getArray(editor).reverse().join('\n'));
 		} else if (action === 'unique') {
-			editor.setValue(api.unique(getArray(editor)).join('\n'));
+			editor.setValue(ListOps.unique(getArray(editor)).join('\n'));
 		} else if (action === 'select all') {
 			editor.selectAll();
 			refreshResults = false;
@@ -152,7 +156,7 @@ var ListTool = (function () {
 		}
 
 		if ($('#btn-unique').is('.active')) {
-			resultsToShow = api.unique(resultsToShow);
+			resultsToShow = ListOps.unique(resultsToShow);
 		}
 
 		setValueFromArray(editorResults, resultsToShow);
@@ -170,117 +174,121 @@ var ListTool = (function () {
 		return editor;
 	};
 
-	api.self = function (arr) {
-		return arr;
+	ListTool.clearModalShown = function () {
+		if (window.localStorage) {
+			window.localStorage[showModalKey] = true;
+		}
 	};
 
-	api.unique = function (arr) {
-		var ret = [];
-		arr.forEach(function (value) {
-			if (ret.indexOf(value) < 0) {
-				ret.push(value);
-			}
-		});
-		return ret;
-	};
-
-	api.union = function (one, two) {
-		return one.concat(two);
-	};
-
-	api.intersection = function (one, two) {
-		var ret = [];
-		one.forEach(function (value) {
-			if (two.indexOf(value) >= 0) {
-				ret.push(value);
-			}
-		});
-		return ret;
-	};
-
-	api.complement = function (one, two) {
-		var ret = [];
-		one.forEach(function (value) {
-			if (two.indexOf(value) < 0) {
-				ret.push(value);
-			}
-		});
-		return ret;
-	};
-
-	api.outersection = function (one, two) {
-		var setOne = [], setTwo = [];
-		setOne = api.complement(one, two);
-		setTwo = api.complement(two, one);
-		return api.union(setOne, setTwo);
-	};
-
-	api.getEditors = function () {
+	ListTool.getEditors = function () {
 		return [editorListA, editorListB, editorResults];
 	};
 
-	api.init = function (one, two) {
-		$(document).ready(function () {
-			// store buttons
-			$buttonsGet = $('#get-results button');
-			$buttonsTweak = $('#tweak-results button');
+	/* can pass in null for listA or listB to skip populating that list */
+	ListTool.populateLists = function (listA, listB) {
+		if ($.isArray(listA)) {
+			setValueFromArray(editorListA, listA);
+		}
+		if ($.isArray(listB)) {
+			setValueFromArray(editorListB, listB);
+		}
+	};
 
-			// init editors
-			editorListA = initEditor('list-a', true);
-			editorListB = initEditor('list-b', true);
-			editorResults = initEditor('results', false);
-			editorResults.setReadOnly(true);
+	ListTool.init = function () {
+		var showModal = true;
 
-			// setup start values
-			setValueFromArray(editorListA, one);
-			setValueFromArray(editorListB, two);
+		// only init once
+		if (isInited) {
+			return;
+		}
 
-			// button clicks: get results
-			$buttonsGet.click(function (e) {
-				var $current = $(this), isActive = $current.hasClass('active');
-				$buttonsGet.removeClass('active');
-				if (!isActive) {
-					$current.addClass('active');
-				}
-				setLogo(selectorLogoMain, heightLogoMain);
-				setLogo(selectorLogoResults, heightLogoResults);
-				getResults();
-			});
+		// store buttons
+		$buttonsGet = $('#get-results button');
+		$buttonsTweak = $('#tweak-results button');
 
-			// button clicks: tweak results
-			$buttonsTweak.click(function (e) {
-				$(this).toggleClass('active');
-				tweakResults();
-			});
+		// init editors
+		editorListA = initEditor('list-a', true);
+		editorListB = initEditor('list-b', true);
+		editorResults = initEditor('results', false);
+		editorResults.setReadOnly(true);
 
-			// apply tooltips
-			$buttonsGet.each(function (index) {
-				var options = {};
-				options.delay = { show : 500 };
-				options.placement = index % 2 === 1 ? 'bottom' : 'top';
-				$(this).tooltip(options);
-			});
-
-			// change main-icon when hovering
-			$buttonsGet.hover(function (e) {
-				setLogo(selectorLogoMain, heightLogoMain, $(this).data('logo'));
-			}, function (e) {
-				setLogo(selectorLogoMain, heightLogoMain);
-			});
-
-			// handle things like: sort, select all, etc
-			$('.list-box-actions .badge').click(handleListBoxActions);
-
-			// make sure to calculate results / show item counts
+		// button clicks: get results
+		$buttonsGet.click(function (e) {
+			var $current = $(this), isActive = $current.hasClass('active');
+			$buttonsGet.removeClass('active');
+			if (!isActive) {
+				$current.addClass('active');
+			}
+			setLogo(selectorLogoMain, heightLogoMain);
+			setLogo(selectorLogoResults, heightLogoResults);
 			getResults();
 		});
 
+		// button clicks: tweak results
+		$buttonsTweak.click(function (e) {
+			$(this).toggleClass('active');
+			tweakResults();
+		});
+
+		// apply tooltips
+		$buttonsGet.each(function (index) {
+			var options = {};
+			options.delay = { show : 500 };
+			options.placement = index % 2 === 1 ? 'bottom' : 'top';
+			$(this).tooltip(options);
+		});
+
+		// change main-icon when hovering
+		$buttonsGet.hover(function (e) {
+			setLogo(selectorLogoMain, heightLogoMain, $(this).data('logo'));
+		}, function (e) {
+			setLogo(selectorLogoMain, heightLogoMain);
+		});
+
+		// handle things like: sort, select all, etc
+		$('.list-box-actions .badge').click(handleListBoxActions);
+
+		// handle example datasets button clicks
+		$('#example-datasets button').click(function () {
+			if (!gettingExampleDataset) {
+				gettingExampleDataset = true;
+				$.ajax({
+					dataType : 'json',
+					url : $(this).data('href'),
+					success : function (data) {
+						if ($.isArray(data) && data.length === 2) {
+							ListTool.populateLists(data[0], data[1]);
+						}
+					},
+					complete : function () {
+						gettingExampleDataset = false;
+						$('.modal-footer .btn').click();
+					}
+				});
+			}
+		});
+
+		// make sure to calculate results / show item counts
+		getResults();
+
+		// pop open "information modal" on first page visit
+		if (window.localStorage) {
+			if (window.localStorage[showModalKey] === 'shown') {
+				showModal = false;
+			} else {
+				window.localStorage[showModalKey] = 'shown';
+			}
+		}
+		if (showModal) {
+			$('#header-actions .btn-info').click();
+		}
+
+		// never init again
+		isInited = true;
 	};
 
-	return api;
+	return ListTool;
 }());
 
-ListTool.init(
-	['value-4', 'value-3', 'value-7', 'value-6', 'value-4'],
-	['value-1', 'value-7', 'value-3', 'value-1', 'value-1', 'value-1']
-);
+// initial ListTool when the DOM is ready.
+$(document).ready(ListTool.init);

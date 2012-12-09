@@ -45,9 +45,54 @@
 			<div id="information-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-					<h3>About List Tool <small>by skratchdot</small></h3>
+					<h3><em>List Tool</em> <small>by skratchdot</small></h3>
 				</div>
 				<div class="modal-body">
+					<h4>Quick Start:</h4>
+					<ol>
+						<li>Paste content into the <strong>"List A"</strong> box.</li>
+						<li>Paste content into the <strong>"List B"</strong> box.</li>
+						<li>Click one of the <strong>"Populate Results"</strong> buttons.</li>
+					</ol>
+					<h4>Example Datasets:</h4>
+					<p>
+						Below are a few example datasets you can use to test
+						out functionality. To populate the lists with example
+						data, click on one of the buttons below:
+					</p>
+					<dl id="example-datasets" class="dl-horizontal">
+						<dt>
+							<button class="btn btn-primary bm-pretty" data-href="./data/small1.json">
+								Small Dataset 1
+							</button>
+						</dt>
+						<dd>
+							<strong>A few numbers</strong>
+							-
+							small list of numbers for testing set operations, uniqueness, and sorting
+						</dd>
+						<dt>
+							<button class="btn btn-primary bm-pretty" data-href="./data/small2.json">
+								Small Dataset 2
+							</button>
+						</dt>
+						<dd>
+							<strong>Basketball vs Hockey</strong>
+							-
+							Teams' cities sorted by team name (not city).
+						</dd>
+						<dt>
+							<button class="btn btn-primary bm-pretty" data-href="./data/large1.json">
+								Large Dataset
+							</button>
+						</dt>
+						<dd>
+							<strong>Baseball vs Football</strong>
+							-
+							Wikipedia sources, split by word.
+						</dd>
+					</dl>
+					<h4>About:</h4>
 					<p>
 						This simple tool to compare lists of items was
 						created out of frustration. Week by week, I discovered myself
@@ -64,23 +109,15 @@
 					<p>						
 						I hope you can find a use for it as well!
 					</p>
-					<h4>Quick Start:</h4>
-					<ol>
-						<li>Paste content into "List A"</li>
-						<li>Paste content into "List B"</li>
-						<li>Click one of the "Populate Results" buttons</li>
-						
-					</ol>
 					<h4>Links:</h4>
 					<ul>
 						<li><a href="http://skratchdot.com/projects/list-tool/">Project Page</a></li>
 						<li><a href="https://github.com/skratchdot/list-tool/">Source Code</a></li>
 						<li><a href="https://github.com/skratchdot/list-tool/issues/">Issues / Feature Requests</a></li>
 					</ul>
-					
 				</div>
 				<div class="modal-footer">
-					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+					<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
 				</div>
 			</div>
 			<!-- buttons -->
@@ -213,6 +250,7 @@
 	<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script src="http://skratchdot.github.com/list-tool/js/polyfills.js" type="text/javascript" charset="utf-8"></script>
 	<script src="http://skratchdot.github.com/list-tool/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="http://skratchdot.github.com/list-tool/js/list-ops.js" type="text/javascript" charset="utf-8"></script>
 	<script src="http://skratchdot.github.com/list-tool/js/list-tool.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>

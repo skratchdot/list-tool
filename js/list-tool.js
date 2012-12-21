@@ -8,6 +8,7 @@ var ListTool = (function () {
 		// variables
 		$buttonsGet,
 		$buttonsTweak,
+		defaultSql = null,
 		editorChangeThrottleTime = 100,
 		editorChangeTimer,
 		editorListA,
@@ -32,6 +33,7 @@ var ListTool = (function () {
 		handleEditorChange,
 		handleListBoxActions,
 		setLogo,
+		setSql,
 		setValueFromArray,
 		showAllItemCounts,
 		showItemCount,
@@ -177,6 +179,102 @@ var ListTool = (function () {
 		$(selector).css('background-position', backgroundPosition);
 	};
 
+	setSql = function () {
+		var $active = $buttonsGet.filter('.active'),
+			method = $active.parents('.method-group').data('method'),
+			aFirst = $active.hasClass('a-first'),
+			isReverse = $('#btn-reverse').is('.active'),
+			isSort = $('#btn-sort').is('.active'),
+			isUnique = $('#btn-unique').is('.active'),
+			listOne,
+			listTwo,
+			showDefault = false,
+			$sql = $('#sql-statement strong'),
+			sqlHtml = '';
+		// set default
+		if (defaultSql === null) {
+			defaultSql = $sql.text();
+		}
+		// set list html
+		if (aFirst) {
+			listOne = '<span class="blue nobr">[List A]</span>';
+			listTwo = '<span class="red nobr">[List B]</span>';
+		} else {
+			listOne = '<span class="red nobr">[List B]</span>';
+			listTwo = '<span class="blue nobr">[List A]</span>';
+		}
+
+		// build sql
+		sqlHtml = 'SELECT ';
+
+		// is distinct?
+		if (isUnique) {
+			sqlHtml += 'DISTINCT ';
+		}
+
+		// from/join/where
+		sqlHtml += '<i>value</i> FROM ';
+		if (method === 'self') {
+			sqlHtml += listOne;
+		} else if (method === 'union') {
+			sqlHtml += listOne +
+				' FULL OUTER JOIN ' +
+				listTwo +
+				' ON ' +
+				listOne +
+				'.<i>value</i> = ' +
+				listTwo +
+				'.<i>value</i>';
+		} else if (method === 'intersection') {
+			sqlHtml += listOne +
+				' INNER JOIN ' +
+				listTwo +
+				' ON ' +
+				listOne +
+				'.<i>value</i> = ' +
+				listTwo +
+				'.<i>value</i>';
+		} else if (method === 'complement') {
+			sqlHtml += listOne +
+				' LEFT OUTER JOIN ' +
+				listTwo +
+				' ON ' +
+				listOne +
+				'.<i>value</i> = ' +
+				listTwo +
+				'.<i>value</i> ' +
+				'WHERE ' +
+				listTwo +
+				' IS NULL';
+		} else if (method === 'outersection') {
+			sqlHtml += listOne +
+				' FULL OUTER JOIN ' +
+				listTwo +
+				' ON ' +
+				listOne +
+				'.<i>value</i> = ' +
+				listTwo +
+				'.<i>value</i> ' +
+				'WHERE ' +
+				listOne +
+				' IS NULL OR ' +
+				listTwo +
+				' IS NULL';
+		} else {
+			sqlHtml = defaultSql;
+			showDefault = true;
+		}
+		if (!showDefault) {
+			if (isSort) {
+				sqlHtml += ' ORDER BY <i>value</i> ';
+				sqlHtml += (isReverse) ? 'DESC' : 'ASC';
+			} else if (isReverse) {
+				sqlHtml = 'SELECT <i>temp.value</i> FROM (' + sqlHtml + ') AS <i>temp</i> ORDER BY <i>value</i> DESC';
+			}
+		}
+		$sql.html(sqlHtml);
+	};
+
 	setValueFromArray = function (editor, arr) {
 		editor.setValue(arr.join('\n'));
 		clear(editor);
@@ -275,12 +373,19 @@ var ListTool = (function () {
 			setLogo(selectorLogoMain, heightLogoMain);
 			setLogo(selectorLogoResults, heightLogoResults);
 			getResults();
+			setSql();
 		});
 
 		// button clicks: tweak results
 		$buttonsTweak.click(function (e) {
-			$(this).toggleClass('active');
-			tweakResults();
+			var $current = $(this);
+			$current.toggleClass('active');
+			if ($current.attr('id') === 'btn-sql') {
+				$('body').toggleClass('sql');
+			} else {
+				tweakResults();
+			}
+			setSql();
 		});
 
 		// apply tooltips

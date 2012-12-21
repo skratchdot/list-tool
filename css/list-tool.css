@@ -6,6 +6,18 @@ html, body {
 	outline: 0 !important;
 }
 
+.blue {
+	color: #2F96B4;
+}
+
+.red {
+	color: #BD362F;
+}
+
+.nobr {
+	white-space: nowrap;
+}
+
 #wrapper {
 	min-height: 100%;
 	height: auto !important;
@@ -51,7 +63,7 @@ html, body {
 
 #get-results .a-first,
 #btn-sort, #btn-reverse {
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 
 #get-results button i,
@@ -64,6 +76,17 @@ html, body {
 	display: inline-block;
 	margin: 0;
 	vertical-align: baseline;
+}
+
+#sql-statement {
+	text-align: center;
+	margin: 10px 0 0 0;
+	padding: 5px;
+	display: none;
+}
+
+body.sql #sql-statement {
+	display: block;
 }
 
 #list-boxes h4.title {
@@ -96,6 +119,10 @@ html, body {
 	font-size: 15px;
 	height: 375px;
 	width: 300px;
+}
+
+body.sql {
+	height: 300px;
 }
 
 .list-box {

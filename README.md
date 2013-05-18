@@ -3,7 +3,7 @@
 List Tool is a simple web application to compare lists. To see it in
 action, visit:
 
-- [List Tool](http://skratchdot.github.com/list-tool/)
+- [List Tool](http://skratchdot.github.io/list-tool/)
 
 
 ## List/Set Operations

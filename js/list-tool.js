@@ -72,7 +72,7 @@ var ListTool = (function () {
 					worker.terminate();
 				}
 				workerKey = (new Date()).getTime();
-				worker = new Worker('js/list-worker.js');
+				worker = new Worker('/list-tool/js/list-worker.js');
 				worker.addEventListener('message', function (event) {
 					if (event.data.key === workerKey) {
 						res = event.data.result || [];

@@ -1,6 +1,6 @@
 /*globals importScripts, ListOps */
 
-importScripts('http://skratchdot.github.com/list-tool/js/list-ops.js');
+importScripts('/list-tool/js/list-ops.js');
 
 (function (global) {
 	'use strict';
